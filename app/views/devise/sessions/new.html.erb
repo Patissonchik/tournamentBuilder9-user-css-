@@ -1,0 +1,49 @@
+<div class="wrapper">
+  <header class="header">
+    <div class="logo">Конструктор турниров по настольным играм</div>
+    <div class="user-actions">
+      <% if user_signed_in? %>
+        <%= "email: #{current_user.email} "  %>
+        <%= " Роль пользователя: #{current_user.role}" %>
+        <%= button_to 'Выйти', destroy_user_session_path, method: :delete, class: 'button' %>
+      <% else %>
+        <%= link_to 'Войти', new_user_session_path, class: 'button' %>
+        <%= link_to 'Регистрация', new_user_registration_path, class: 'button' %>
+      <% end %>
+    </div>
+  </header>
+
+  <div class="content">
+    <h2>Вход</h2>
+
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <div class="field">
+        <%= f.label "Введите email" %><br />
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-input' %>
+      </div>
+
+      <div class="field">
+        <p></p>
+        <%= f.label "Введите пароль" %><br />
+        <%= f.password_field :password, autocomplete: "current-password", class: 'form-input' %>
+      </div>
+
+      <!--<% if devise_mapping.rememberable? %>
+        <div class="field">
+          <%= f.check_box :remember_me %>
+          <%= f.label :remember_me %>
+        </div>
+      <% end %>-->
+
+        <p></p>
+        <%= f.submit "Войти", class: 'button' %>
+      
+    <% end %>
+
+    <%= render "devise/shared/links" %>
+  </div>
+
+  <footer class="footer">
+    Информация о сайте
+  </footer>
+</div>

@@ -1,0 +1,53 @@
+<div class="wrapper">
+  <header class="header">
+    <div class="logo">Конструктор турниров по настольным играм</div>
+    <div class="user-actions">
+      <% if user_signed_in? %>
+        <%= "email: #{current_user.email} "  %>
+        <%= " Роль пользователя: #{current_user.role}" %>
+        <%= button_to 'Выйти', destroy_user_session_path, method: :delete, class: 'button' %>
+      <% else %>
+        <%= link_to 'Войти', new_user_session_path, class: 'button' %>
+        <%= link_to 'Регистрация', new_user_registration_path, class: 'button' %>
+      <% end %>
+    </div>
+  </header>
+
+ <div class="content">
+  <h1>Создание нового матча</h1>
+
+  <%= form_for [@tournament, @match] do |f| %>
+    <div class="form-group">
+      <%= f.label "Имя матча", class: 'form-label' %><br>
+      <%= f.text_field :name, class: 'form-input' %>
+      <% if @match.errors.has_key?(:name) %>
+        <p class="error"><%= @match.errors[:name].first %></p>
+      <% end %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label "Количество участников матча", class: 'form-label' %><br>
+      <%= f.number_field :players, class: 'form-input' %>
+      <% if @match.errors.has_key?(:players) %>
+        <p class="error"><%= @match.errors[:players].first %></p>
+      <% end %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label "Введите параметры матча для статистики (Через запятую с пробелом)", class: 'form-label' %><br>
+      <%= f.text_field :statistics_fields, class: 'form-input' %>
+      <% if @match.errors.has_key?(:statistics_fields) %>
+        <p class="error"><%= @match.errors[:statistics_fields].first %></p>
+      <% end %>
+    </div>
+
+    <%= f.submit "Создать матч", class: 'button' %>
+  <% end %>
+  <p></p>
+  <%= link_to "Назад", tournament_path(@tournament), class: 'button' %>
+</div>
+
+  <footer class="footer">
+    Информация о сайте
+  </footer>
+</div>

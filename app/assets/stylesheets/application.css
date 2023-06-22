@@ -1,0 +1,282 @@
+/* Цветовая палитра */
+:root {
+	--primary-color: #d1d1f5;
+	--secondary-color: #9fb2cf;
+	--accent-color: #7c96d6;
+	--dark-color: #6a72af;
+}
+
+/* Основные стили */
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Arial, sans-serif;
+}
+
+.wrapper {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.header {
+	background-color: var(--dark-color);
+	color: white;
+	padding: 10px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.header .logo {
+	font-size: 24px;
+	font-weight: bold;
+}
+
+.header .user-actions {
+	display: flex;
+	gap: 10px;
+}
+
+.button {
+	color: white;
+	background-color: var(--secondary-color);
+	padding: 8px 16px;
+	width: auto;
+	height: auto;
+	border: none;
+	border-radius: 4px;
+	text-decoration: none;
+}
+
+.content {
+	flex-grow: 1;
+	background-color: var(--primary-color);
+	padding: 20px;
+}
+
+.tournaments {
+	text-align: center;
+}
+
+.tournaments h2 {
+	margin-top: 40px;
+	font-size: 24px;
+	font-weight: bold;
+	text-align: center;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+}
+
+th,
+td {
+	padding: 10px;
+	text-align: center;
+	border: 1px solid var(--dark-color);
+	color: black;
+}
+
+th {
+	background-color: var(--secondary-color);
+	color: black;
+	font-weight: bold;
+}
+
+td {
+	background-color: var(--primary-color);
+	color: black;
+}
+
+.tournaments ul {
+	list-style: none;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 20px;
+	justify-items: center;
+	align-items: center;
+	text-align: center;
+}
+
+.tournaments ul li {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--secondary-color);
+	padding: 10px;
+	width: 200px;
+	height: 100px;
+	border-radius: 4px;
+	color: white;
+	font-size: 18px;
+	text-align: center;
+	transition: background-color 0.3s ease;
+}
+
+.tournaments ul li:hover {
+	background-color: var(--accent-color);
+}
+
+.tournaments ul li a {
+	color: white;
+	text-decoration: none;
+}
+
+.tournaments ul li a:hover {
+	text-decoration: underline;
+}
+
+.tournament-name {
+	text-align: center;
+	margin-top: 20px;
+}
+
+.tournament-info {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+}
+
+.matches {
+	width: 40%;
+	text-align: left;
+	margin-bottom: 20px;
+}
+
+.matches h3 {
+	text-align: left;
+	margin-bottom: 10px;
+}
+
+.matches ul {
+	list-style: none;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 20px;
+	justify-items: center;
+	align-items: center;
+	text-align: center;
+}
+
+.matches ul li {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--secondary-color);
+	padding: 10px;
+	width: 200px;
+	height: 100px;
+	border-radius: 4px;
+	color: white;
+	font-size: 18px;
+	text-align: center;
+	transition: background-color 0.3s ease;
+}
+
+.matches ul li:hover {
+	background-color: var(--accent-color);
+}
+
+.matches ul li a {
+	color: white;
+	text-decoration: none;
+}
+
+.matches ul li a:hover {
+	text-decoration: underline;
+}
+
+.create-match {
+	margin-top: 20px;
+}
+
+.tournament-details {
+	width: 55%;
+	text-align: right;
+	margin-bottom: 20px;
+}
+
+.tournament-details .description-container {
+	text-align: center;
+}
+
+.section-heading {
+	font-size: 18px;
+	font-weight: bold;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+.tournament-description {
+	text-align: left;
+}
+
+.actions {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.tournament-actions {
+	display: flex;
+	gap: 10px;
+}
+
+.tournament-actions .button {
+	flex-grow: 1;
+}
+
+.all-tournaments {
+	text-align: center;
+	margin-top: 20px;
+}
+
+.form-group {
+	margin-bottom: 20px;
+}
+
+.form-label {
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.form-input {
+	padding: 8px;
+	border: 1px solid var(--dark-color);
+	border-radius: 4px;
+	background-color: var(--primary-color);
+	color: black;
+	resize: both;
+	width: 300px;
+
+}
+
+.form-input2 {
+	padding: 8px;
+	border: 1px solid var(--dark-color);
+	border-radius: 4px;
+	background-color: var(--primary-color);
+	color: black;
+	resize: both;
+	height: 200px;
+	width: 200px;
+
+}
+
+.error {
+	color: red;
+	font-size: 14px;
+	margin-top: 5px;
+}
+
+.footer {
+	margin-top: auto;
+	background-color: var(--dark-color);
+	color: white;
+	padding: 10px;
+	text-align: left;
+}

@@ -1,0 +1,241 @@
+<div class="wrapper">
+  <header class="header">
+    <div class="logo">Конструктор турниров по настольным играм</div>
+    <div class="user-actions">
+      <% if user_signed_in? %>
+        <%= "email: #{current_user.email} "  %>
+        <%= " Роль пользователя: #{current_user.role}" %>
+        <%= button_to 'Выйти', destroy_user_session_path, method: :delete, class: 'button' %>
+      <% else %>
+        <%= link_to 'Войти', new_user_session_path, class: 'button' %>
+        <%= link_to 'Регистрация', new_user_registration_path, class: 'button' %>
+      <% end %>
+    </div>
+  </header>
+
+  <div class="content">
+    <h1><%= @match.name %></h1>
+    <p><%= @tournament.name %></p>
+
+    <form id="match-stats-form">
+      <table id="match-table">
+        <thead>
+          <tr>
+            <th>Игроки / Параметры</th>
+            <% @match.statistics_fields.split(',').each do |field| %>
+              <th><%= field.strip %></th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <% JSON.parse(@match_stat.data).each_with_index do |row, i| %>
+            <tr>
+              <% if user_signed_in? && (current_user == @match.tournament.user  || current_user.role == "admin") %>
+                <td contenteditable="true" class="player-cell"><%= row[0] %></td>
+                <% row[1..-1].each do |value| %>
+                  <td contenteditable="true" class="stat-cell"><%= value %></td>
+                <% end %>
+              <% else %>
+                <td><%= row[0] %></td>
+                <% row[1..-1].each do |value| %>
+                  <td><%= value %></td>
+                <% end %>
+              <% end %>
+            </tr>
+          <% end %>
+          <% (@match.players - JSON.parse(@match_stat.data).length).times do %>
+            <tr>
+              <% if user_signed_in? && (current_user == @match.tournament.user  || current_user.role == "admin") %>
+                <td contenteditable="true" class="player-cell">Введите игрока</td>
+                <% @match.statistics_fields.split(',').length.times do %>
+                  <td contenteditable="true" class="stat-cell" data-numeric="true"></td>
+                <% end %>
+              <% else %>
+                <td>Введите игрока</td>
+                <% @match.statistics_fields.split(',').length.times do %>
+                  <td></td>
+                <% end %>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <% if user_signed_in? && (current_user == @tournament.user || current_user.role == "admin") %>
+        <p></p>
+        <button class='button' type="submit" id="save-table-btn">Сохранить</button>
+      <% end %>
+    </form>
+
+
+
+
+<% if user_signed_in? && (current_user == @tournament.user || current_user.role == "admin") %>
+      <p><%= button_to "Удалить матч", tournament_match_path(@tournament, @match), method: :delete, class: 'button', data: { confirm: "Are you sure you want to delete this match?" } %></p>
+    <% end %>
+
+    <p><%= link_to "Вернуться к турниру", tournament_path(@tournament), class: 'button' %></p>
+  </div>
+
+  <footer class="footer">
+    Информация о сайте
+  </footer>
+</div>
+
+
+<!--<p>Match Stat Data: <%= @match_stat.data %></p>-->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function() {
+    function saveMatchStats() {
+      var tableData = getTableData();
+      var matchId = <%= @match.id %>;
+
+      $.ajaxSetup({
+        headers: {
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+
+      // Отправка данных статистики матча через AJAX
+      $.ajax({
+      url: "/tournaments/<%= @tournament.id %>/matches/<%= @match.id %>",
+      method: "PUT",
+      data: {
+        match: {
+          match_stat: {
+            data: tableData
+          }
+        }
+      },
+      success: function(response) {
+          // Обработка успешного сохранения
+          console.log("Статистика матча сохранена успешно");
+        },
+        error: function(xhr, status, error) {
+          // Обработка ошибки сохранения
+          console.error("Ошибка при сохранении статистики матча:", error);
+        }
+      });
+    }
+
+    // Получение данных таблицы и сохранение в JSON формате
+    function getTableData() {
+  var data = [];
+  $('#match-table tbody tr').each(function() {
+    var row = [];
+    $(this).find('td').each(function() {
+      row.push($(this).text());
+    });
+    data.push(row);
+  });
+  return JSON.stringify(data);
+}
+
+    // Обработчик события клика на кнопку "Сохранить"
+    $('#save-table-btn').on('click', function() {
+      console.log('Кнопка "Сохранить" нажата');
+      saveMatchStats();
+    });
+    $('.stat-cell[data-numeric="true"]').on('keydown', function(e) {
+    var key = e.keyCode || e.which;
+    if (key !== 8 && key !== 9 && key !== 46 && key !== 190 && (key < 48 || key > 57)) {
+      e.preventDefault();
+    }
+  });
+
+  // Проверка ввода после завершения редактирования ячейки
+  $('.stat-cell[data-numeric="true"]').on('blur', function() {
+    var value = parseFloat($(this).text());
+    if (isNaN(value) || value <= 0) {
+      $(this).text('');
+    }
+  });
+  });
+</script>
+
+<script>
+  $(document).ready(function() {
+    // Функция для сортировки таблицы по столбцу
+    function sortTable(columnIndex) {
+      var table = $('#match-table');
+      var rows = table.find('tbody tr').toArray();
+
+      rows.sort(function(a, b) {
+        var aValue = parseFloat($(a).find('td:eq(' + columnIndex + ')').text());
+        var bValue = parseFloat($(b).find('td:eq(' + columnIndex + ')').text());
+
+        if (!isNaN(aValue) && !isNaN(bValue)) {
+          return aValue - bValue;
+        } else {
+          return 0;
+        }
+      });
+
+      // Проверка текущего порядка сортировки
+      var currentOrder = table.data('current-order') || 'asc';
+
+      if (currentOrder === 'asc') {
+        rows.reverse();
+        table.data('current-order', 'desc');
+      } else {
+        table.data('current-order', 'asc');
+      }
+
+      // Перемещение строк в таблице
+      $.each(rows, function(index, row) {
+        table.children('tbody').append(row);
+      });
+    }
+
+    // Обработчик события клика на заголовки таблицы
+    $('#match-table thead th:not(:first-child)').on('click', function() {
+      var columnIndex = $(this).index();
+      sortTable(columnIndex);
+    });
+
+    // Обработчик события клика на заголовок "Игроки/Параметры"
+    $('#match-table thead th:first-child').on('click', function() {
+      var columnIndex = $(this).index();
+      var table = $('#match-table');
+      var rows = table.find('tbody tr').toArray();
+
+      rows.sort(function(a, b) {
+        var aValue = $(a).find('td:eq(' + columnIndex + ')').text();
+        var bValue = $(b).find('td:eq(' + columnIndex + ')').text();
+
+        return aValue.localeCompare(bValue);
+      });
+
+      // Проверка текущего порядка сортировки
+      var currentOrder = table.data('current-order') || 'asc';
+
+      if (currentOrder === 'asc') {
+        rows.reverse();
+        table.data('current-order', 'desc');
+      } else {
+        table.data('current-order', 'asc');
+      }
+
+      // Перемещение строк в таблице
+      $.each(rows, function(index, row) {
+        table.children('tbody').append(row);
+      });
+    });
+
+    // Блокировка ввода текста и других символов в ячейки таблицы
+    $('.stat-cell[data-numeric="true"]').on('input', function() {
+      var value = $(this).text().replace(/[^0-9.]/g, '');
+      $(this).text(value);
+    });
+
+    // Проверка ввода после завершения редактирования ячейки
+    $('.stat-cell[data-numeric="true"]').on('blur', function() {
+      var value = parseFloat($(this).text());
+      if (isNaN(value) || value <= 0) {
+        $(this).text('');
+      }
+    });
+  });
+</script>

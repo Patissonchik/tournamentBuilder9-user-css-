@@ -1,0 +1,54 @@
+<div class="wrapper">
+  <header class="header">
+    <div class="logo">Конструктор турниров по настольным играм</div>
+    <div class="user-actions">
+      <% if user_signed_in? %>
+        <%= "email: #{current_user.email} "  %>
+        <%= " Роль пользователя: #{current_user.role}" %>
+        <%= button_to 'Выйти', destroy_user_session_path, method: :delete, class: 'button' %>
+      <% else %>
+        <%= link_to 'Войти', new_user_session_path, class: 'button' %>
+        <%= link_to 'Регистрация', new_user_registration_path, class: 'button' %>
+      <% end %>
+    </div>
+  </header>
+
+  <div class="content">
+  <h1>Редактирование турнира: <%= @tournament.name %></h1>
+
+  <%= form_for(@tournament) do |f| %>
+    <div class="tournament-info">
+      <div class="matches">
+        <div class="form-group">
+  <%= f.label "Измените имя турнира", class: 'form-label' %>
+  <%= f.text_field :name, class: 'form-input' %>
+  <% if @tournament.errors.has_key?(:name) %>
+    <p class="error"><%= @tournament.errors[:name].first %></p>
+  <% end %>
+</div>
+
+<div class="form-group">
+  <%= f.label "Измените описание турнира", class: 'form-label' %>
+  <p></p>
+  <%= f.text_area :description, class: 'form-input2', rows: 5 %>
+  <% if @tournament.errors.has_key?(:description) %>
+    <p class="error"><%= @tournament.errors[:description].first %></p>
+  <% end %>
+</div>
+
+        <div class="create-match">
+          <% if user_signed_in? && (current_user == @tournament.user || current_user.role == "admin") %>
+            <%= f.submit "Обновить информацию", class: 'button' %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <%= link_to "Назад", tournament_path(@tournament), class: 'button' %>
+</div>
+
+  <footer class="footer">
+    Информация о сайте
+  </footer>
+</div>

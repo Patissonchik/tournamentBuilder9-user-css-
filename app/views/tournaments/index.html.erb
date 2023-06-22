@@ -1,0 +1,33 @@
+<div class="wrapper">
+  <header class="header">
+    <div class="logo">Конструктор турниров по настольным играм</div>
+    <div class="user-actions">
+      <% if user_signed_in? %>
+        <%= "email: #{current_user.email} "  %>
+        <%= " Роль пользователя: #{current_user.role}" %>
+        <%= button_to 'Выйти', destroy_user_session_path, method: :delete, class: 'button' %>
+      <% else %>
+        <%= link_to 'Войти', new_user_session_path, class: 'button' %>
+        <%= link_to 'Регистрация', new_user_registration_path, class: 'button' %>
+      <% end %>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="tournaments">
+      <h2>Турниры</h2>
+      <ul>
+        <% @tournaments.reverse_each do |tournament| %>
+          <li><%= link_to tournament.name, tournament_path(tournament) %></li>
+        <% end %>
+      </ul>
+      <% if user_signed_in? %>
+        <%= link_to 'Создать турнир', new_tournament_path, class: 'button' %>
+      <% end %>
+    </div>
+  </div>
+
+  <footer class="footer">
+    Информация о сайте
+  </footer>
+</div>

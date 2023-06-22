@@ -1,0 +1,58 @@
+<div class="wrapper">
+  <header class="header">
+    <div class="logo">Конструктор турниров по настольным играм</div>
+    <div class="user-actions">
+      <% if user_signed_in? %>
+        <%= "email: #{current_user.email} "  %>
+        <%= " Роль пользователя: #{current_user.role}" %>
+        <%= button_to 'Выйти', destroy_user_session_path, method: :delete, class: 'button' %>
+      <% else %>
+        <%= link_to 'Войти', new_user_session_path, class: 'button' %>
+        <%= link_to 'Регистрация', new_user_registration_path, class: 'button' %>
+      <% end %>
+    </div>
+  </header>
+
+  <div class="content">
+    <h2 class="tournament-name"><%= @tournament.name %></h2>
+    <div class="tournament-info">
+      <div class="matches">
+        <h3 class="section-heading">Матчи</h3>
+        <ul>
+          <% @matches.reverse_each do |match| %>
+            <li><%= link_to match.name, tournament_match_path(@tournament, match) %></li>
+          <% end %>
+        </ul>
+
+        <% if user_signed_in? && (current_user == @tournament.user || current_user.role == "admin") %>
+          <div class="create-match">
+            <%= link_to "Создать матч", new_tournament_match_path(@tournament), class: 'button' %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="tournament-details">
+        <h3 class="section-heading">Описание турнира</h3>
+        <div class="description-container">
+          <p class="tournament-description"><%= @tournament.description %></p>
+
+          <% if user_signed_in? && (current_user == @tournament.user || current_user.role == "admin") %>
+            <div class="actions">
+              <div class="tournament-actions">
+                <%= link_to "Редактировать турнир", edit_tournament_path(@tournament), class: 'button' %>
+                <%= button_to "Удалить турнир", tournament_path(@tournament), method: :delete, class: 'button' %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <%= link_to "Все турниры", tournaments_path, class: 'button' %>
+  </div>
+
+  <footer class="footer">
+    <div class="all-tournaments">
+    </div>
+    Информация о сайте
+  </footer>
+</div>

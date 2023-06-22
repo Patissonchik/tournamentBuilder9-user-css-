@@ -1,0 +1,53 @@
+<div class="wrapper">
+  <header class="header">
+    <div class="logo">Конструктор турниров по настольным играм</div>
+    <div class="user-actions">
+      <% if user_signed_in? %>
+        <%= "email: #{current_user.email} "  %>
+        <%= " Роль пользователя: #{current_user.role}" %>
+        <%= button_to 'Выйти', destroy_user_session_path, method: :delete, class: 'button' %>
+      <% else %>
+        <%= link_to 'Войти', new_user_session_path, class: 'button' %>
+        <%= link_to 'Регистрация', new_user_registration_path, class: 'button' %>
+      <% end %>
+    </div>
+  </header>
+
+  <div class="content">
+    <h2>Регистрация</h2>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <div class="field">
+        <%= f.label "Введите email" %><br />
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-input' %>
+      </div>
+
+      <div class="field">
+        <p></p>
+        <%= f.label "Введите пароль" %>
+        <% if @minimum_password_length %>
+        <em>(Не менее <%= @minimum_password_length %> знаков )</em>
+        <% end %><br />
+        <%= f.password_field :password, autocomplete: "new-password", class: 'form-input' %>
+      </div>
+
+      <div class="field">
+        <p></p>
+        <%= f.label "Подтвердите пароль" %><br />
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: 'form-input' %>
+      </div>
+
+      <p></p>
+      <%= f.submit "Зарегистрироваться", class: 'button' %>
+      
+    <% end %>
+
+    <%= render "devise/shared/links" %>
+  </div>
+
+  <footer class="footer">
+    Информация о сайте
+  </footer>
+</div>
