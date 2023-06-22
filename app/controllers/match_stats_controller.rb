@@ -85,4 +85,5 @@ class MatchStatsController < ApplicationController
   def match_stat_params
     params.require(:match_stat).permit(:data, :match_id)
   end
+  #.....
 end
